@@ -2,4 +2,4 @@
 .idea/
 data/PHOENIX2014T/
 *.pyc
-sign_sample_model/
+sign_sample_model*/

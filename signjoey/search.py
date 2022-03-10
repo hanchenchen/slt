@@ -363,7 +363,7 @@ def beam_search(
 
         # append latest prediction
         alive_seq = torch.cat(
-            [alive_seq.index_select(0, select_indices), topk_ids.view(-1, 1)], -1
+            [alive_seq.index_select(0, select_indices.int()), topk_ids.view(-1, 1)], -1
         )  # batch_size*k x hyp_len
 
         is_finished = topk_ids.eq(eos_index)
@@ -406,31 +406,31 @@ def beam_search(
             if len(non_finished) == 0:
                 break
             # remove finished batches for the next step
-            topk_log_probs = topk_log_probs.index_select(0, non_finished)
-            batch_index = batch_index.index_select(0, non_finished)
-            batch_offset = batch_offset.index_select(0, non_finished)
-            alive_seq = predictions.index_select(0, non_finished).view(
+            topk_log_probs = topk_log_probs.index_select(0, non_finished.int())
+            batch_index = batch_index.index_select(0, non_finished.int())
+            batch_offset = batch_offset.index_select(0, non_finished.int())
+            alive_seq = predictions.index_select(0, non_finished.int()).view(
                 -1, alive_seq.size(-1)
             )
 
         # reorder indices, outputs and masks
         select_indices = batch_index.view(-1)
-        encoder_output = encoder_output.index_select(0, select_indices)
-        src_mask = src_mask.index_select(0, select_indices)
+        encoder_output = encoder_output.index_select(0, select_indices.int())
+        src_mask = src_mask.index_select(0, select_indices.int())
 
         if hidden is not None and not transformer:
             if isinstance(hidden, tuple):
                 # for LSTMs, states are tuples of tensors
                 h, c = hidden
-                h = h.index_select(1, select_indices)
-                c = c.index_select(1, select_indices)
+                h = h.index_select(1, select_indices.int())
+                c = c.index_select(1, select_indices.int())
                 hidden = (h, c)
             else:
                 # for GRUs, states are single tensors
-                hidden = hidden.index_select(1, select_indices)
+                hidden = hidden.index_select(1, select_indices.int())
 
         if att_vectors is not None:
-            att_vectors = att_vectors.index_select(0, select_indices)
+            att_vectors = att_vectors.index_select(0, select_indices.int())
 
     def pad_and_stack_hyps(hyps, pad_value):
         filled = (
