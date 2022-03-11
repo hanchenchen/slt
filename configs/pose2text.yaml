@@ -1,6 +1,6 @@
 name: sign_experiment
 data:
-    data_path: ../ProgressiveTransformersSLP/Data/phoenix/ # ./data/
+    data_path: ../ProgressiveTransformersSLP/Data/phoenix/
     version: phoenix_2014_trans
     sgn: sign
     txt: text

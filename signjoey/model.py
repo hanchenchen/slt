@@ -74,6 +74,8 @@ class SignModel(nn.Module):
         self.do_recognition = do_recognition
         self.do_translation = do_translation
 
+        self.pose_fc = nn.Linear(151, 1024)
+
     # pylint: disable=arguments-differ
     def forward(
         self,
@@ -94,6 +96,9 @@ class SignModel(nn.Module):
         :param txt_mask: target mask
         :return: decoder outputs
         """
+        # print(sgn.shape)
+        # exit()
+        # torch.Size([32, 177, 1024])
         encoder_output, encoder_hidden = self.encode(
             sgn=sgn, sgn_mask=sgn_mask, sgn_length=sgn_lengths
         )
@@ -135,6 +140,9 @@ class SignModel(nn.Module):
         :param sgn_length:
         :return: encoder outputs (output, hidden_concat)
         """
+        if sgn.shape[-1]==151: # if inputs are pose sequences
+            sgn = self.pose_fc(sgn)
+
         return self.encoder(
             embed_src=self.sgn_embed(x=sgn, mask=sgn_mask),
             src_length=sgn_length,

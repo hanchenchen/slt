@@ -74,6 +74,7 @@ class Batch:
                 tmp_sgn[idx] = features
             self.sgn = tmp_sgn
 
+        sgn_dim = 151
         self.sgn_dim = sgn_dim
         self.sgn_mask = (self.sgn != torch.zeros(sgn_dim))[..., 0].unsqueeze(1)
 

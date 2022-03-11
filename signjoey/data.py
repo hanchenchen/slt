@@ -54,12 +54,14 @@ def load_data(data_cfg: dict) -> (Dataset, Dataset, Dataset, Vocabulary, Vocabul
         dev_paths = [os.path.join(data_path, x) for x in data_cfg["dev"]]
         test_paths = [os.path.join(data_path, x) for x in data_cfg["test"]]
         pad_feature_size = sum(data_cfg["feature_size"])
+        pad_feature_size = 151
 
     else:
         train_paths = os.path.join(data_path, data_cfg["train"])
         dev_paths = os.path.join(data_path, data_cfg["dev"])
         test_paths = os.path.join(data_path, data_cfg["test"])
         pad_feature_size = data_cfg["feature_size"]
+        pad_feature_size = 151
 
     level = data_cfg["level"]
     txt_lowercase = data_cfg["txt_lowercase"]
